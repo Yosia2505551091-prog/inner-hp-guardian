@@ -72,14 +72,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "InnerHP" },
+      { name: "description", content: "Inner HP Guardian is a gamified mental health tracker that uses RPG mechanics to encourage self-care." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "InnerHP" },
+      { property: "og:description", content: "Inner HP Guardian is a gamified mental health tracker that uses RPG mechanics to encourage self-care." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "InnerHP" },
+      { name: "twitter:description", content: "Inner HP Guardian is a gamified mental health tracker that uses RPG mechanics to encourage self-care." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/edfc10f7-7323-4ce2-9208-c22224c2a2fa/id-preview-74b17414--bf39ee11-1d0d-4f3d-8ce6-717a920aea6c.lovable.app-1778424327044.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/edfc10f7-7323-4ce2-9208-c22224c2a2fa/id-preview-74b17414--bf39ee11-1d0d-4f3d-8ce6-717a920aea6c.lovable.app-1778424327044.png" },
     ],
     links: [
       {
