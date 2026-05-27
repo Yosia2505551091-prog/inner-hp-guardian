@@ -21,18 +21,33 @@ type State = {
   streak: number;
   badges: string[];
   mode: HPMode;
+  avatar: string;
+  questsCompleted: number;
+  recoveredFromEmergency: boolean;
+  reachedFullHpAgain: boolean;
   addHP: (delta: number, reason?: string) => void;
   addXP: (delta: number) => void;
   unlockBadge: (id: string) => void;
   setHP: (n: number) => void;
+  setAvatar: (id: string) => void;
+  recordQuest: () => void;
 };
 
 const Ctx = createContext<State | null>(null);
 
 const STORAGE_KEY = "innerhp.state.v1";
 
-type Persist = { hp: number; xp: number; level: number; streak: number; badges: string[] };
-const DEFAULT: Persist = { hp: 72, xp: 240, level: 7, streak: 7, badges: ["sleep-master", "mental-survivor"] };
+type Persist = {
+  hp: number; xp: number; level: number; streak: number; badges: string[];
+  avatar: string; questsCompleted: number;
+  recoveredFromEmergency: boolean; reachedFullHpAgain: boolean;
+};
+const DEFAULT: Persist = {
+  hp: 72, xp: 240, level: 7, streak: 7,
+  badges: ["first-quest", "sleep-master", "streak-7"],
+  avatar: "mage", questsCompleted: 12,
+  recoveredFromEmergency: false, reachedFullHpAgain: false,
+};
 
 export function HPProvider({ children }: { children: ReactNode }) {
   const [s, setS] = useState<Persist>(DEFAULT);
@@ -49,7 +64,13 @@ export function HPProvider({ children }: { children: ReactNode }) {
   }, [s]);
 
   const addHP = useCallback((delta: number) => {
-    setS((p) => ({ ...p, hp: Math.max(0, Math.min(100, p.hp + delta)) }));
+    setS((p) => {
+      const next = Math.max(0, Math.min(100, p.hp + delta));
+      const wasEmergency = p.hp < 40;
+      const recoveredFromEmergency = p.recoveredFromEmergency || (wasEmergency && next >= 40);
+      const reachedFullHpAgain = p.reachedFullHpAgain || (recoveredFromEmergency && next >= 100);
+      return { ...p, hp: next, recoveredFromEmergency, reachedFullHpAgain };
+    });
   }, []);
   const addXP = useCallback((delta: number) => {
     setS((p) => {
@@ -64,11 +85,17 @@ export function HPProvider({ children }: { children: ReactNode }) {
   const setHP = useCallback((n: number) => {
     setS((p) => ({ ...p, hp: Math.max(0, Math.min(100, n)) }));
   }, []);
+  const setAvatar = useCallback((id: string) => {
+    setS((p) => ({ ...p, avatar: id }));
+  }, []);
+  const recordQuest = useCallback(() => {
+    setS((p) => ({ ...p, questsCompleted: p.questsCompleted + 1 }));
+  }, []);
 
   const value: State = {
     ...s,
     mode: modeFromHp(s.hp),
-    addHP, addXP, unlockBadge, setHP,
+    addHP, addXP, unlockBadge, setHP, setAvatar, recordQuest,
   };
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
