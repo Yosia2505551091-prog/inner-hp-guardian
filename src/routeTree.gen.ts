@@ -13,6 +13,7 @@ import { Route as StatsRouteImport } from './routes/stats'
 import { Route as QuestsRouteImport } from './routes/quests'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as EmergencyRouteImport } from './routes/emergency'
 import { Route as CheckinRouteImport } from './routes/checkin'
@@ -36,6 +37,11 @@ const ProfileRoute = ProfileRouteImport.update({
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HomeRoute = HomeRouteImport.update({
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/checkin': typeof CheckinRoute
   '/emergency': typeof EmergencyRoute
   '/home': typeof HomeRoute
+  '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/profile': typeof ProfileRoute
   '/quests': typeof QuestsRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/checkin': typeof CheckinRoute
   '/emergency': typeof EmergencyRoute
   '/home': typeof HomeRoute
+  '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/profile': typeof ProfileRoute
   '/quests': typeof QuestsRoute
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/checkin': typeof CheckinRoute
   '/emergency': typeof EmergencyRoute
   '/home': typeof HomeRoute
+  '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/profile': typeof ProfileRoute
   '/quests': typeof QuestsRoute
@@ -97,6 +106,7 @@ export interface FileRouteTypes {
     | '/checkin'
     | '/emergency'
     | '/home'
+    | '/login'
     | '/onboarding'
     | '/profile'
     | '/quests'
@@ -107,6 +117,7 @@ export interface FileRouteTypes {
     | '/checkin'
     | '/emergency'
     | '/home'
+    | '/login'
     | '/onboarding'
     | '/profile'
     | '/quests'
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/checkin'
     | '/emergency'
     | '/home'
+    | '/login'
     | '/onboarding'
     | '/profile'
     | '/quests'
@@ -128,6 +140,7 @@ export interface RootRouteChildren {
   CheckinRoute: typeof CheckinRoute
   EmergencyRoute: typeof EmergencyRoute
   HomeRoute: typeof HomeRoute
+  LoginRoute: typeof LoginRoute
   OnboardingRoute: typeof OnboardingRoute
   ProfileRoute: typeof ProfileRoute
   QuestsRoute: typeof QuestsRoute
@@ -162,6 +175,13 @@ declare module '@tanstack/react-router' {
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/home': {
@@ -200,6 +220,7 @@ const rootRouteChildren: RootRouteChildren = {
   CheckinRoute: CheckinRoute,
   EmergencyRoute: EmergencyRoute,
   HomeRoute: HomeRoute,
+  LoginRoute: LoginRoute,
   OnboardingRoute: OnboardingRoute,
   ProfileRoute: ProfileRoute,
   QuestsRoute: QuestsRoute,
@@ -208,3 +229,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
