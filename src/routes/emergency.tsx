@@ -35,22 +35,24 @@ function Emergency() {
           <div className="w-10" />
         </div>
 
-        <div className="mt-8 text-center">
+        <div className="relative z-20 mt-8 text-center">
           <p className="text-xs text-white/60">Your HP feels low.</p>
           <h1 className="mt-2 font-display text-3xl font-bold leading-snug">You're safe here.<br />Let's slow down together.</h1>
         </div>
 
-        <div className="my-14 grid flex-1 place-items-center">
-          <div className="relative grid place-items-center">
+        <div className="relative my-14 grid flex-1 place-items-center">
+          <div className="relative grid h-[300px] w-[300px] place-items-center">
             <div
-              className="absolute rounded-full bg-white/10 backdrop-blur transition-all duration-[4000ms] ease-in-out"
+              aria-hidden
+              className="absolute z-0 rounded-full bg-white/10 backdrop-blur transition-all duration-[4000ms] ease-in-out"
               style={{
                 width: phase === "in" ? 280 : phase === "hold" ? 280 : 160,
                 height: phase === "in" ? 280 : phase === "hold" ? 280 : 160,
               }}
             />
             <div
-              className="absolute rounded-full transition-all duration-[4000ms] ease-in-out"
+              aria-hidden
+              className="absolute z-0 rounded-full transition-all duration-[4000ms] ease-in-out"
               style={{
                 width: phase === "in" ? 240 : phase === "hold" ? 240 : 120,
                 height: phase === "in" ? 240 : phase === "hold" ? 240 : 120,
@@ -58,14 +60,15 @@ function Emergency() {
                 boxShadow: "0 0 80px color-mix(in oklab, var(--mint) 60%, transparent)",
               }}
             />
-            <div className="relative z-10 text-center">
+            <div className="relative z-20 text-center drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
               <p className="font-display text-3xl font-bold capitalize">{phase === "in" ? "Breathe in" : phase === "hold" ? "Hold" : "Release"}</p>
               <p className="mt-1 font-display text-6xl font-bold tabular-nums">{count}</p>
+              <p className="mt-2 text-[11px] uppercase tracking-widest text-white/70">4 · 4 · 4 rhythm</p>
             </div>
           </div>
         </div>
 
-        <div className="space-y-4">
+        <div className="relative z-20 space-y-4">
           {[
             { i: Wind, l: "Continue breathing (2 min)", d: "Follow a gentle guided rhythm to settle your breath." },
             { i: BookHeart, l: "Write down what you feel", d: "Let your thoughts drift onto the page without judgment." },
