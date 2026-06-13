@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
-import logo from "@/assets/innerhp-logo.png";
+import logoAsset from "@/assets/innerhp-logo.png.asset.json";
 import { MagicParticles } from "@/components/MagicParticles";
 
 export const Route = createFileRoute("/login")({
@@ -17,7 +17,7 @@ function Login() {
     <div className="relative mx-auto flex min-h-screen w-full max-w-[440px] flex-col px-6 py-10">
       <MagicParticles />
       <div className="text-center">
-        <img src={logo} alt="InnerHP" width={768} height={768} className="mx-auto h-24 w-24 object-contain drop-shadow-xl" />
+        <img src={logoAsset.url} alt="InnerHP" className="mx-auto h-28 w-28 object-contain drop-shadow-xl" />
         <h1 className="mt-3 font-display text-3xl font-bold">Welcome back, hero</h1>
         <p className="mt-1 text-sm text-muted-foreground">Your adventure journal is waiting.</p>
       </div>
