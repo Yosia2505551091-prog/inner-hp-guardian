@@ -139,9 +139,9 @@ export const QUEST_POOL: Quest[] = [
 ];
 
 const MODE_RULES: Record<HPMode, { count: number; difficulties: Difficulty[] }> = {
-  maintenance: { count: 6, difficulties: ["easy", "medium", "hard"] },
-  recovery:    { count: 5, difficulties: ["easy", "medium"] },
-  emergency:   { count: 3, difficulties: ["easy"] },
+  maintenance: { count: 5, difficulties: ["easy", "medium", "hard"] },
+  recovery:    { count: 6, difficulties: ["easy", "medium"] },
+  emergency:   { count: 8, difficulties: ["easy"] },
 };
 
 export function questsForMode(mode: HPMode): Quest[] {
