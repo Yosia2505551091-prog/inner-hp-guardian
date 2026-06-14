@@ -8,7 +8,7 @@ import { dailyQuote, recoveryQuote, emergencyQuote } from "@/lib/quotes";
 import { useState } from "react";
 import { avatarById } from "@/lib/avatars";
 import { titleForLevel, xpProgress, nextMilestone } from "@/lib/levels";
-import { activeMainQuest, progressFor } from "@/lib/main-quests";
+import { activeChapter, chapterProgress } from "@/lib/main-quests";
 
 export const Route = createFileRoute("/home")({
   component: Home,
@@ -24,15 +24,16 @@ const moods = [
 ];
 
 function Home() {
-  const { hp, xp, level, streak, badges, mode, addHP, avatar, questsCompleted } = useHP();
+  const { hp, xp, level, streak, badges, mode, addHP, avatar, questsCompleted, checkinCount, hp70Days, recoveredFromEmergency } = useHP();
   const meta = MODE_META[mode];
   const todayQuests = pickDailyQuests(undefined, mode).slice(0, 3);
   const av = avatarById(avatar);
   const title = titleForLevel(level);
   const xpInfo = xpProgress(xp, level);
   const nextTitleAt = nextMilestone(level);
-  const mainQuest = activeMainQuest({ questsCompleted, streak, level, badgesUnlocked: badges.length });
-  const mainProgress = progressFor(mainQuest, { questsCompleted, streak, level, badgesUnlocked: badges.length });
+  const mqStats = { questsCompleted, checkinCount, streak, level, badgesUnlocked: badges.length, recoveredFromEmergency, hp70Days };
+  const mainQuest = activeChapter(mqStats);
+  const mainProgress = chapterProgress(mainQuest, mqStats);
   const dayQuestsTotal = mode === "maintenance" ? 6 : mode === "recovery" ? 5 : 3;
   const completionRate = Math.round((Math.min(todayQuests.length, dayQuestsTotal) / dayQuestsTotal) * 100);
   const [pickedMood, setPickedMood] = useState<number | null>(null);
@@ -131,12 +132,13 @@ function Home() {
               <Compass className="h-5 w-5" />
             </div>
             <div className="flex-1">
+              <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Chapter {mainQuest.number}</p>
               <p className="font-display text-base font-semibold">{mainQuest.title}</p>
-              <p className="text-[11px] text-muted-foreground">{mainQuest.description}</p>
+              <p className="text-[11px] text-muted-foreground">{mainQuest.story}</p>
             </div>
             <div className="text-right">
-              <p className="font-display text-sm font-bold">{mainProgress.current}/{mainQuest.goal}</p>
-              <p className="text-[10px] text-muted-foreground">+{mainQuest.rewardXp} XP</p>
+              <p className="font-display text-sm font-bold">{mainProgress.pct}%</p>
+              <p className="text-[10px] text-muted-foreground">+{mainQuest.rewards.xp} XP</p>
             </div>
           </div>
           <div className="relative mt-3 h-2 w-full overflow-hidden rounded-full bg-white/60">
@@ -188,9 +190,9 @@ function Home() {
             <p className="font-display text-base font-bold">Lv {level}</p>
           </div>
           <div className="col-span-2 rounded-2xl bg-white/40 p-3">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Active main quest</p>
-            <p className="font-display text-sm font-bold leading-tight">{mainQuest.title}</p>
-            <p className="text-[11px] text-muted-foreground">{mainProgress.current}/{mainQuest.goal} · {mainProgress.pct}%</p>
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Active chapter</p>
+            <p className="font-display text-sm font-bold leading-tight">Ch {mainQuest.number} · {mainQuest.title}</p>
+            <p className="text-[11px] text-muted-foreground">{mainProgress.pct}% complete</p>
           </div>
           <div className="rounded-2xl bg-white/40 p-3 text-center">
             <Trophy className="mx-auto h-4 w-4 text-[var(--lavender)]" />

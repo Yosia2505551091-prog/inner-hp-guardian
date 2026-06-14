@@ -44,7 +44,7 @@ function Slider({ label, value, set, gradient }: { label: string; value: number;
 
 function CheckIn() {
   const nav = useNavigate();
-  const { addHP, hp } = useHP();
+  const { addHP, hp, recordCheckin } = useHP();
   const [mood, setMood] = useState(3);
   const [stress, setStress] = useState(4);
   const [sleep, setSleep] = useState(7);
@@ -70,6 +70,7 @@ function CheckIn() {
     delta += sD; reasons.push(`Bonds ${sD >= 0 ? "+" : ""}${sD}`);
     delta = Math.max(-15, Math.min(15, delta));
     addHP(delta);
+    recordCheckin();
     setResult({ delta, reasons });
   };
 
