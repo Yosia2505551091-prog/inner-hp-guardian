@@ -23,6 +23,8 @@ type State = {
   mode: HPMode;
   avatar: string;
   questsCompleted: number;
+  checkinCount: number;
+  hp70Days: number;
   recoveredFromEmergency: boolean;
   reachedFullHpAgain: boolean;
   addHP: (delta: number, reason?: string) => void;
@@ -31,6 +33,7 @@ type State = {
   setHP: (n: number) => void;
   setAvatar: (id: string) => void;
   recordQuest: () => void;
+  recordCheckin: () => void;
 };
 
 const Ctx = createContext<State | null>(null);
@@ -40,12 +43,14 @@ const STORAGE_KEY = "innerhp.state.v1";
 type Persist = {
   hp: number; xp: number; level: number; streak: number; badges: string[];
   avatar: string; questsCompleted: number;
+  checkinCount: number; hp70Days: number;
   recoveredFromEmergency: boolean; reachedFullHpAgain: boolean;
 };
 const DEFAULT: Persist = {
   hp: 72, xp: 240, level: 7, streak: 7,
   badges: ["first-quest", "sleep-master", "streak-7"],
   avatar: "mage", questsCompleted: 12,
+  checkinCount: 4, hp70Days: 3,
   recoveredFromEmergency: false, reachedFullHpAgain: false,
 };
 
@@ -91,11 +96,18 @@ export function HPProvider({ children }: { children: ReactNode }) {
   const recordQuest = useCallback(() => {
     setS((p) => ({ ...p, questsCompleted: p.questsCompleted + 1 }));
   }, []);
+  const recordCheckin = useCallback(() => {
+    setS((p) => ({
+      ...p,
+      checkinCount: p.checkinCount + 1,
+      hp70Days: p.hp >= 70 ? p.hp70Days + 1 : p.hp70Days,
+    }));
+  }, []);
 
   const value: State = {
     ...s,
     mode: modeFromHp(s.hp),
-    addHP, addXP, unlockBadge, setHP, setAvatar, recordQuest,
+    addHP, addXP, unlockBadge, setHP, setAvatar, recordQuest, recordCheckin,
   };
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
