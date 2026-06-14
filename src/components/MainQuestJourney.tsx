@@ -100,12 +100,12 @@ function Timeline({ stats, onPick }: { stats: MainQuestStats; onPick: (id: strin
           : "bg-white/60 text-muted-foreground";
         const icon = status === "complete" ? "✓" : status === "active" ? "►" : "🔒";
         return (
-          <li key={c.id} className="mb-2 last:mb-0">
+          <li key={c.id} className="relative mb-2 last:mb-0">
+            <span className={`absolute -left-[22px] top-1/2 grid h-5 w-5 -translate-y-1/2 place-items-center rounded-full text-[10px] font-bold ${dot}`}>{icon}</span>
             <button
               onClick={() => onPick(c.id)}
               className={`flex w-full items-center gap-3 rounded-2xl px-3 py-2 text-left transition-all hover:bg-white/60 ${isActive ? "bg-white/70" : ""}`}
             >
-              <span className={`absolute -left-[11px] grid h-5 w-5 place-items-center rounded-full text-[10px] font-bold ${dot}`} style={{ marginLeft: 0 }}>{icon}</span>
               <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Ch {c.number}</span>
               <span className="flex-1 font-display text-xs font-semibold">{c.title}</span>
             </button>
