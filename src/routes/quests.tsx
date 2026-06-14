@@ -5,6 +5,7 @@ import { Sparkles, Check, RefreshCcw, Gem } from "lucide-react";
 import { CATEGORY_META, Difficulty, Quest, pickDailyQuests, rerollQuest, QuestCategory } from "@/lib/quests";
 import { useHP, MODE_META } from "@/lib/hp-context";
 import { questCompleteQuote } from "@/lib/quotes";
+import { MainQuestJourney } from "@/components/MainQuestJourney";
 
 export const Route = createFileRoute("/quests")({
   component: Quests,
@@ -18,7 +19,11 @@ const diffColor: Record<Difficulty, string> = {
 };
 
 function Quests() {
-  const { addHP, addXP, recordQuest, mode } = useHP();
+  const { addHP, addXP, recordQuest, mode, questsCompleted, checkinCount, streak, level, badges, hp70Days, recoveredFromEmergency } = useHP();
+  const mqStats = {
+    questsCompleted, checkinCount, streak, level,
+    badgesUnlocked: badges.length, recoveredFromEmergency, hp70Days,
+  };
   const [active, setActive] = useState<Quest[]>(() => pickDailyQuests(undefined, mode));
   const [done, setDone] = useState<Record<string, boolean>>({});
   const [rerolling, setRerolling] = useState<string | null>(null);
@@ -74,6 +79,14 @@ function Quests() {
           {MODE_META[mode].label} mode · {active.length} quests today
         </p>
       </header>
+
+      <MainQuestJourney stats={mqStats} />
+
+      <div className="mt-5 flex items-center gap-2">
+        <span className="h-px flex-1 bg-border" />
+        <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground">Daily quests</span>
+        <span className="h-px flex-1 bg-border" />
+      </div>
 
       <div className="glass mt-4 flex items-center justify-between rounded-3xl p-4">
         <div>
