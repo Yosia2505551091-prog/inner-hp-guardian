@@ -175,15 +175,14 @@ export function pickDailyQuests(seed = new Date().toDateString(), countOrMode: n
 export function rerollQuest(current: Quest, exclude: string[]): Quest {
   const candidates = QUEST_POOL.filter(
     (q) =>
-      q.difficulty === current.difficulty &&
       q.category === current.category &&
       q.id !== current.id &&
       !exclude.includes(q.id),
   );
   if (!candidates.length) {
-    // Fall back to same difficulty if category is too narrow
+    // Fall back to any category if this one is too narrow
     const wider = QUEST_POOL.filter(
-      (q) => q.difficulty === current.difficulty && q.id !== current.id && !exclude.includes(q.id),
+      (q) => q.id !== current.id && !exclude.includes(q.id),
     );
     if (!wider.length) return current;
     return wider[Math.floor(Math.random() * wider.length)];
