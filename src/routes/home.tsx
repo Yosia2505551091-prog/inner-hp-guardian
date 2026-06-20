@@ -15,16 +15,8 @@ export const Route = createFileRoute("/home")({
   head: () => ({ meta: [{ title: "Adventurer's Camp — InnerHP" }, { name: "description", content: "Your daily Mental HP camp." }] }),
 });
 
-const moods = [
-  { e: "🌧️", label: "Low", delta: -4 },
-  { e: "😐", label: "Meh", delta: -1 },
-  { e: "🙂", label: "Okay", delta: 2 },
-  { e: "😊", label: "Good", delta: 5 },
-  { e: "✨", label: "Bright", delta: 7 },
-];
-
 function Home() {
-  const { hp, xp, level, streak, badges, mode, addHP, avatar, questsCompleted, checkinCount, hp70Days, recoveredFromEmergency } = useHP();
+  const { hp, xp, level, streak, badges, mode, avatar, questsCompleted, checkinCount, hp70Days, recoveredFromEmergency } = useHP();
   const meta = MODE_META[mode];
   const todayQuests = pickDailyQuests(undefined, mode).slice(0, 3);
   const av = avatarById(avatar);
@@ -36,11 +28,11 @@ function Home() {
   const mainProgress = chapterProgress(mainQuest, mqStats);
   const dayQuestsTotal = mode === "maintenance" ? 6 : mode === "recovery" ? 5 : 3;
   const completionRate = Math.round((Math.min(todayQuests.length, dayQuestsTotal) / dayQuestsTotal) * 100);
-  const [pickedMood, setPickedMood] = useState<number | null>(null);
-  const quote =
+  const pickQuote = () =>
     mode === "emergency" ? emergencyQuote()
     : mode === "recovery" ? recoveryQuote()
     : dailyQuote();
+  const [quote, setQuote] = useState<string>(() => pickQuote());
 
   return (
     <MobileShell>
@@ -96,28 +88,17 @@ function Home() {
         </div>
       </section>
 
-      {/* Mood quick row */}
-      <section className="mt-5">
-        <h3 className="mb-2 font-display text-sm font-semibold text-muted-foreground">How's your heart right now?</h3>
-        <div className="glass-soft flex justify-between rounded-2xl p-2">
-          {moods.map((m, i) => (
-            <button
-              key={i}
-              onClick={() => { setPickedMood(i); addHP(m.delta); }}
-              className={`flex flex-col items-center rounded-xl px-2 py-1.5 transition-all hover:bg-white/60 ${pickedMood === i ? "bg-white/80 shadow-sm scale-105" : ""}`}
-            >
-              <span className="text-2xl">{m.e}</span>
-              <span className="mt-0.5 text-[10px] text-muted-foreground">{m.label}</span>
-            </button>
-          ))}
-        </div>
-      </section>
-
       {/* Quote */}
-      <section className="mt-5 overflow-hidden rounded-3xl bg-gradient-to-br from-[var(--peach)]/60 to-[var(--lavender)]/60 p-5">
+      <button
+        type="button"
+        onClick={() => setQuote(pickQuote())}
+        aria-label="New inspirational quote"
+        className="mt-5 block w-full overflow-hidden rounded-3xl bg-gradient-to-br from-[var(--peach)]/60 to-[var(--lavender)]/60 p-5 text-left transition-transform active:scale-[0.99]"
+      >
         <Coffee className="h-5 w-5 text-foreground/70" />
         <p className="mt-2 font-display text-base leading-snug">“{quote}”</p>
-      </section>
+        <p className="mt-2 text-[10px] uppercase tracking-wider text-muted-foreground">Tap for another</p>
+      </button>
 
       {/* Main quest */}
       <section className="mt-5">
