@@ -50,7 +50,13 @@ function Profile() {
     const el = badgeRefs.current[b.id];
     if (!el) return;
     const rect = el.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
+    const vw = window.innerWidth;
+    const tipWidth = vw < 380 ? 200 : vw < 640 ? 216 : 224;
+    const pad = 10;
+    const centerX = Math.max(
+      tipWidth / 2 + pad,
+      Math.min(rect.left + rect.width / 2, vw - tipWidth / 2 - pad)
+    );
     const topY = rect.top;
     if (tipBadge?.id === b.id) {
       setTipBadge(null);
@@ -174,8 +180,15 @@ function Profile() {
                         const el = badgeRefs.current[b.id];
                         if (!el) return;
                         const rect = el.getBoundingClientRect();
+                        const vw = window.innerWidth;
+                        const tipWidth = vw < 380 ? 200 : vw < 640 ? 216 : 224;
+                        const pad = 10;
+                        const centerX = Math.max(
+                          tipWidth / 2 + pad,
+                          Math.min(rect.left + rect.width / 2, vw - tipWidth / 2 - pad)
+                        );
                         setTipBadge(b);
-                        setTipPos({ left: rect.left + rect.width / 2, top: rect.top });
+                        setTipPos({ left: centerX, top: rect.top });
                       }}
                       onMouseLeave={() => {
                         setTipBadge(null);
@@ -293,7 +306,7 @@ function Profile() {
       {/* Fixed badge tooltip — rendered outside all containers so it can never be clipped */}
       {tipBadge && tipPos && tipStatus && (
         <div
-          className="pointer-events-none fixed z-[90] w-56 animate-in fade-in zoom-in-95 duration-200"
+          className="pointer-events-none fixed z-[90] w-[200px] xs:w-[216px] sm:w-56 animate-in fade-in zoom-in-95 duration-200"
           style={{ left: tipPos.left, top: tipPos.top - 8, transform: "translate(-50%, -100%)" }}
         >
           <div
